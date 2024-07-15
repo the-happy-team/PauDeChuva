@@ -1,6 +1,6 @@
 #include <AccelStepper.h>
 
-#define MAX_ROTATIONS 16
+#define MAX_ROTATIONS 24
 
 class Rotation {
 public:
@@ -37,14 +37,14 @@ public:
     mStepper.moveTo(0);
   }
 
-  void addRotation(int16_t degrees, uint16_t seconds) {
+  void addRotation(int16_t degrees, float seconds) {
     if (nRotations >= maxRotations) return;
 
     int16_t target = int16_t((degrees / 360.0f) * stepsPerRevolution);
 
     rotations[nRotations].target = target;
-    rotations[nRotations].speed = abs(target) / seconds;
-    rotations[nRotations].millis = 1000 * seconds;
+    rotations[nRotations].speed = uint16_t(abs(target) / seconds);
+    rotations[nRotations].millis = uint16_t(1000 * seconds);
 
     nRotations += 1;
   }
