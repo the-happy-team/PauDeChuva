@@ -1,6 +1,6 @@
 #include <AccelStepper.h>
 
-#define MAX_ROTATIONS 24
+#define MAX_ROTATIONS 16
 
 class Rotation {
 public:
@@ -24,13 +24,16 @@ private:
 
 public:
   // AccelStepper(AccelStepper::DRIVER, stepPin, directionPin);
-  PauDeChuva(uint8_t stepPin, uint8_t directionPin, uint16_t stepsPerRevolution)
+  PauDeChuva(uint8_t stepPin, uint8_t directionPin, uint8_t enablePin, uint8_t referencePin, uint16_t stepsPerRevolution)
     : mStepper(AccelStepper::DRIVER, stepPin, directionPin),
       stepsPerRevolution{ stepsPerRevolution },
       maxRotations{ MAX_ROTATIONS },
       nRotations{ 0 },
       cRotation{ 0 } {
 
+    pinMode(referencePin, OUTPUT);
+    digitalWrite(referencePin, HIGH);
+    mStepper.setEnablePin(enablePin);
     mStepper.setCurrentPosition(0);
     mStepper.setMaxSpeed(stepsPerRevolution / 2);
     mStepper.setAcceleration(stepsPerRevolution * 1000);
@@ -64,6 +67,12 @@ public:
       uint16_t cSpeed = rotations[cRotation].speed;
 
       nextChange = millis() + rotations[cRotation].millis;
+
+      if (cRotation == 0) {
+        mStepper.enableOutputs();
+      } else if (cRotation == (nRotations - 1) && cTarget == 0) {
+        mStepper.disableOutputs();
+      }
 
       mStepper.setMaxSpeed(cSpeed);
       mStepper.setAcceleration(2000 * cSpeed);
