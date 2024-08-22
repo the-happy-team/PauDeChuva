@@ -24,7 +24,9 @@ private:
 
 public:
   // AccelStepper(AccelStepper::DRIVER, stepPin, directionPin);
-  PauDeChuva(uint8_t stepPin, uint8_t directionPin, uint8_t enablePin, uint8_t referencePin, uint16_t stepsPerRevolution)
+  PauDeChuva(uint8_t stepPin, uint8_t directionPin,
+             uint8_t enablePin, uint8_t referencePin,
+             uint16_t stepsPerRevolution = 3200)
     : mStepper(AccelStepper::DRIVER, stepPin, directionPin),
       stepsPerRevolution{ stepsPerRevolution },
       maxRotations{ MAX_ROTATIONS },
